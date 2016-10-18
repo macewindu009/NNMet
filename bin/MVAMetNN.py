@@ -162,19 +162,14 @@ def load_datasetcsv():
     
     
     #inputnames = {"targetphi"}
-    #targetnames = {'targetphi','targetrecoilNN'}
-    targetnames = {'Boson_Phi','Boson_Pt'}
+    targetnames = {'targetPhiFromSlimmed','targetrecoilFromSlimmed'}
+    #targetnames = {'Boson_Phi','Boson_Pt'}
     
     
-    plotnames = {"targetphi","targetrecoil","targetrecoilNN", "MVAMET_Phi", "Boson_Phi", "Boson_Pt","dmvamet_Phi", "dpfmet_Pt", "dpfmet_Phi", "MVAMET_Pt", "MVAMET_sumEt","recoilslimmedMETs_Pt", "recoilslimmedMETs_LongZ", "recoilslimmedMETs_Phi", "PhiTrainingResponse", "RecoilTrainingResponse", "PhiCorrectedRecoil_Pt", "PhiCorrectedRecoil_LongZ", "PhiCorrectedRecoil_PerpZ", "PhiCorrectedRecoil_Phi", "PhiCorrectedRecoil_MET", "PhiCorrectedRecoil_METPhi", "LongZCorrectedRecoil_Phi", "LongZCorrectedRecoil_LongZ", "NVertex"}
+    plotnames = {"targetPhiFromSlimmed","targetRecoilFromSlimmed","targetRecoilFromBDT", "MVAMET_Phi", "Boson_Phi", "Boson_Pt","dmvamet_Phi", "dpfmet_Pt", "dpfmet_Phi", "MVAMET_Pt", "MVAMET_sumEt","recoilslimmedMETs_Pt", "recoilslimmedMETs_LongZ", "recoilslimmedMETs_Phi", "PhiTrainingResponse", "RecoilTrainingResponse", "PhiCorrectedRecoil_Pt", "PhiCorrectedRecoil_LongZ", "PhiCorrectedRecoil_PerpZ", "PhiCorrectedRecoil_Phi", "PhiCorrectedRecoil_MET", "PhiCorrectedRecoil_METPhi", "LongZCorrectedRecoil_Phi", "LongZCorrectedRecoil_LongZ", "NVertex"}
     
     
     
-    #Insert targetvariable for NN
-    for index in range(0,header.shape[0]):
-	if header[index] == 'Boson_Pt':
-	    print("Boson_Pt conv:", index)
-	
     #inputdatentot = np.hstack((inputdatentot,np.array(inputdatentot[:,bosonPt]/inputdatentot[:,METT1_Pt]).reshape(inputdatentot.shape[0],1)))
     
     
@@ -209,7 +204,7 @@ def load_datasetcsv():
 		inputDataPlot = np.hstack((inputDataPlot, np.array(inputdatentot[:,index]).reshape(inputdatentot.shape[0],1)))
 
     #header = np.vstack((header.reshape(header.shape[0],1),np.array('targetrecoilNN').reshape(1,1)))
-    
+    """
     if 'targetrecoilNN' in inputnames:
 	dictInputX['targetrecoilNN'] = inputDataX.shape[1]
 	inputDataX = np.hstack((inputDataX,np.array(inputdatentot[:,dictInputTot['Boson_Pt']]/inputdatentot[:,dictInputTot['recoilslimmedMETs_Pt']]).reshape(inputdatentot.shape[0],1)))
@@ -222,9 +217,21 @@ def load_datasetcsv():
 	dictPlot['targetrecoilNN'] = inputDataPlot.shape[1]
 	inputDataPlot = np.hstack((inputDataPlot,np.array(inputdatentot[:,dictInputTot['Boson_Pt']]/inputdatentot[:,dictInputTot['recoilslimmedMETs_Pt']]).reshape(inputdatentot.shape[0],1)))
 	    
-		    
-    #for variable in plotnames:
-	#make_Plot(variable,inputDataPlot,dictPlot)
+	    
+	    
+    if 'targetphiNN' in inputnames:
+	dictInputX['targetphiNN'] = inputDataX.shape[1]
+	inputDataX = np.hstack((inputDataX,np.array(inputdatentot[:,dictInputTot['Boson_Phi']]-inputdatentot[:,dictInputTot['recoilslimmedMETs_Phi']]).reshape(inputdatentot.shape[0],1)))
+	
+    if 'targetphiNN' in targetnames:
+	dictInputY['targetphiNN'] = inputDataY.shape[1]
+	inputDataY = np.hstack((inputDataY,np.array(inputdatentot[:,dictInputTot['Boson_Phi']]-inputdatentot[:,dictInputTot['recoilslimmedMETs_Phi']]).reshape(inputdatentot.shape[0],1)))
+	    
+    if 'targetphiNN' in plotnames:
+	dictPlot['targetphiNN'] = inputDataPlot.shape[1]
+	inputDataPlot = np.hstack((inputDataPlot,np.array(inputdatentot[:,dictInputTot['Boson_Phi']]-inputdatentot[:,dictInputTot['recoilslimmedMETs_Phi']]).reshape(inputdatentot.shape[0],1)))
+    """
+    
     
 		    
     print("xshape ", inputDataX.shape)
@@ -250,7 +257,7 @@ def load_datasetcsv():
     varSelectedY = inputDataY[:-inputDataY.shape[0]*3/6].std(axis = 0)
 
     meanSelectedPlot = inputDataPlot[:-inputDataPlot.shape[0]*3/6].mean(axis=0)
-    varSelectedPlot = inputDataPlot[:-inputDataPlot.shape[0]*3/6].std(axis = 0)
+    stdSelectedPlot = inputDataPlot[:-inputDataPlot.shape[0]*3/6].std(axis = 0)
     
     inputDataX = (inputDataX - meanSelectedX) / varSelectedX
     inputDataY = (inputDataY - meanSelectedY) / varSelectedY
@@ -271,7 +278,7 @@ def load_datasetcsv():
     inputDataPlot = inputDataPlot[-inputDataPlot.shape[0]*2/6:]
 
 
-    return X_train, y_train, X_val, y_val, X_test, y_test, dictInputY, inputDataPlot, dictPlot, meanSelectedPlot, varSelectedPlot
+    return X_train, y_train, X_val, y_val, X_test, y_test, dictInputY, inputDataPlot, dictPlot, meanSelectedPlot, stdSelectedPlot
     
     
     
@@ -284,7 +291,7 @@ def make_Plot(variablename, inputData, dictPlot):
     n, bins, patches = plt.hist(histData, num_bins, facecolor='green', alpha=0.5)
     plt.xlabel(variablename)
     plt.ylabel('Hits')
-    plt.savefig(('../plots/'+variablename+".png"))
+    plt.savefig(('../plots/PlotVariables/'+variablename+".png"))
     plt.clf()
     return 0
     
@@ -396,19 +403,23 @@ def make_ULongOverRecoilPlot(plotData,dictPlot, bosonName, targetvariable, minra
     
 
 
-def plot_results(plotData, dictPlot, meanPlot, varPlot, dictTarget):
+def plot_results(plotData, dictPlot, meanPlot, stdPlot, dictTarget):
     
 
     #Transform NNoutput back
     for targetname in dictTarget:
-	plotData[:,dictPlot['NNOutput_%s'%targetname]] = plotData[:,dictPlot['NNOutput_%s'%targetname]]*varPlot[dictPlot[targetname]]+meanPlot[dictPlot[targetname]]
+	plotData[:,dictPlot['NNOutput_%s'%targetname]] = plotData[:,dictPlot['NNOutput_%s'%targetname]]*stdPlot[dictPlot[targetname]]+meanPlot[dictPlot[targetname]]
 
 
     if not os.path.exists('../plots/SingleDistributions'):
 	os.makedirs('../plots/SingleDistributions')
 	
     
+    if not os.path.exists('../plots/PlotVariables'):
+	os.makedirs('../plots/PlotVariables')
     
+    for variable in dictPlot:
+	make_Plot(variable,plotData,dictPlot)
     
     #Boson Pt
     #comparisonMinus.xlabel('Boson_Pt')
@@ -431,11 +442,13 @@ def plot_results(plotData, dictPlot, meanPlot, varPlot, dictTarget):
     make_ULongMinusRecoilPlot(plotData, dictPlot, 'recoilslimmedMETs_LongZ', 'Boson_Pt',10,200,10)
     
     plt.figure(4)
+    legend = plt.legend(loc='upper right', shadow=True)
     plt.savefig('../plots/PredOverBoson_Compare_Boson_Pt')
     plt.clf()
     plt.figure(5)
+    legend = plt.legend(loc='upper right', shadow=True)
     plt.savefig('../plots/PredMinusBoson_Compare_Boson_Pt')
-    plt.clf
+    plt.clf()
     plt.figure(0)
     
     
@@ -459,11 +472,13 @@ def plot_results(plotData, dictPlot, meanPlot, varPlot, dictTarget):
     make_ULongMinusRecoilPlot(plotData, dictPlot, 'recoilslimmedMETs_LongZ', 'NVertex',5,40,5)
     
     plt.figure(4)
+    legend = plt.legend(loc='upper right', shadow=True)
     plt.savefig('../plots/PredOverBoson_Compare_NVertex')
     plt.clf()
     plt.figure(5)
+    legend = plt.legend(loc='upper right', shadow=True)
     plt.savefig('../plots/PredMinusBoson_Compare_NVertex')
-    plt.clf
+    plt.clf()
     plt.figure(0)
     
     num_bins = 50
@@ -473,7 +488,7 @@ def plot_results(plotData, dictPlot, meanPlot, varPlot, dictTarget):
 	histDataNN = plotData[:,dictPlot[targetname]] - plotData[:,dictPlot['NNOutput_%s'%targetname]]
 	
 	n, bins, patches = plt.hist(histDataNN, num_bins, facecolor='green', alpha=0.5)
-	plt.xlabel('Target - NNOutput1')
+	plt.xlabel('Target - %s'%targetname)
 	plt.ylabel('Hits')
 	plt.savefig("../plots/NNVariance_%s.png"%targetname)
 	plt.clf()
@@ -488,7 +503,7 @@ def plot_results(plotData, dictPlot, meanPlot, varPlot, dictTarget):
     
 	
       
-    histDataBDT = plotData[:,dictPlot['targetphi']]- plotData[:,dictPlot['PhiCorrectedRecoil_Phi']]
+    histDataBDT = plotData[:,dictPlot['targetPhiFromSlimmed']] - plotData[:,dictPlot['PhiCorrectedRecoil_Phi']]
     
     n, bins, patches = plt.hist(histDataBDT, num_bins, facecolor='green', alpha=0.5)
     plt.xlabel('Deviation from Result')
@@ -519,17 +534,7 @@ def plot_results(plotData, dictPlot, meanPlot, varPlot, dictTarget):
     
    
     
-    
-    
-    """
-    plt.hist2d(plotData[:,BosonPt], histDataLongOverZPt,bins = 80, norm=LogNorm())
-    #plt.ylim([-0.25,0.25])
-    plt.xlabel('Boson Pt')
-    plt.ylabel('u_long/Boson Pt')
-    plt.savefig("../plots/ULongoverBosonPt")
-    plt.clf()
-    """
-
+   
     return True
 
     
@@ -743,12 +748,12 @@ def iterate_minibatches(inputs, targets, batchsize, shuffle=False):
 # more functions to better separate the code, but it wouldn't make it any
 # easier to read.
 
-def main(model='mlp', num_epochs=300):
+def main(model='mlp', num_epochs=20):
     
     
     # Load the dataset
     print("Loading data...")
-    X_trainMVA, y_trainMVA, X_valMVA, y_valMVA, X_testMVA, y_testMVA, dictTarget, plotData, dictPlot, meanPlot, varPlot = load_datasetcsv()
+    X_trainMVA, y_trainMVA, X_valMVA, y_valMVA, X_testMVA, y_testMVA, dictTarget, plotData, dictPlot, meanPlot, stdPlot = load_datasetcsv()
     
     #X_train, y_train, X_val, y_val, X_test, y_test = load_dataset()
     
@@ -777,10 +782,19 @@ def main(model='mlp', num_epochs=300):
         return
     
     
+  
+    
     # Create a loss expression for training, i.e., a scalar objective we want
     # to minimize (for our multi-class problem, it is the cross-entropy loss):
+    
     prediction = lasagne.layers.get_output(network)
+    
+    # Iwie klappt das nicht?
+    custom_loss = T.min(((prediction-target_var),2*math.pi-(prediction-target_var), 2*math.pi+(prediction-target_var)))
+    function_loss = theano.function([prediction,target_var],custom_loss)
+    
     loss = lasagne.objectives.squared_error(prediction, target_var)
+    #loss = function_loss(prediction,target_var) #
     loss = loss.mean()
     # We could add some weight decay as well here, see lasagne.regularization.
 
@@ -795,8 +809,8 @@ def main(model='mlp', num_epochs=300):
     # here is that we do a deterministic forward pass through the network,
     # disabling dropout layers.
     test_prediction = lasagne.layers.get_output(network, deterministic=True)
-    test_loss = lasagne.objectives.squared_error(test_prediction,
-                                                            target_var)
+    test_loss = lasagne.objectives.squared_error(test_prediction, target_var)
+    #test_loss = function_loss(prediction,target_var)
     test_loss = test_loss.mean()
     # As a bonus, also create an expression for the classification accuracy:
     test_acc = T.mean(T.eq(T.argmax(test_prediction, axis=1), target_var),
@@ -814,10 +828,10 @@ def main(model='mlp', num_epochs=300):
     #test = predict_fn(X_testMVA)
     #print("testshape", test.shape)
 
-    load = True
+    load = False
     
     if load:
-	with np.load('model.npz') as f:
+	with np.load('modelBoson_PhiandPt.npz') as f:
 	    param_values = [f['arr_%d' % i] for i in range(len(f.files))]
 	lasagne.layers.set_all_param_values(network, param_values)
     else:
@@ -896,7 +910,6 @@ def main(model='mlp', num_epochs=300):
     print('testsettargetmax: ', y_testMVA.max())
     print('error: ', val_fn(X_testMVA,(y_testMVA/varPlot[dictPlot['targetphi']])))
 
-    dictPlot['NNOutput2'] = 0
     for variablename in dictTarget:
 	dictPlot["NNOutput_%s"%variablename] = plotData.shape[1]
 	plotData = np.hstack((plotData, np.array(testSetPrediction[:,dictTarget[variablename]]).reshape(testSetPrediction.shape[0],1)))
@@ -904,7 +917,7 @@ def main(model='mlp', num_epochs=300):
     
     
     print("plotDatashape", plotData.shape)
-    plot_results(plotData, dictPlot, meanPlot, varPlot, dictTarget)
+    plot_results(plotData, dictPlot, meanPlot, stdPlot, dictTarget)
    
     
     
