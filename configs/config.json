@@ -1,11 +1,11 @@
 { 
 	"activeTraining" : "trainingdefault",
 	"activePlotting" : "plottingdefault",
-		"inputFile": "../data/dataMVAMetSmall.csv",
+		"inputFile": "../data/dataMVAMetTrainNew.csv",
 		"outputDir": "../testplots/",
 		"loadExistingModel": true,
 		"importFileNetworkModel": "modelBoson_PhiSquaredShort.npz",
-		"performTraining": false,
+		"performTraining": true,
 		"exportFileNetworkModel": "modelBoson_PhiSquaredShort.npz",
 
 		"plottingdefault":
