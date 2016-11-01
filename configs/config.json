@@ -1,0 +1,158 @@
+{ 
+	"activeTraining" : "trainingdefault",
+	"activePlotting" : "plottingdefault",
+		"inputFile": "../data/dataMVAMetSmall.csv",
+		"outputDir": "../testplots/",
+		"loadExistingModel": true,
+		"importFileNetworkModel": "modelBoson_PhiSquaredShort.npz",
+		"performTraining": false,
+		"exportFileNetworkModel": "modelBoson_PhiSquaredShort.npz",
+
+		"plottingdefault":
+		{
+			"plotPlotVariables": true,
+			"sliceData": true,
+			"BosonCut": 30,
+			"plotVariables":
+			[
+			"targetPhiFromSlimmed","targetRecoilFromSlimmed","targetRecoilFromBDT", "MVAMET_Phi", "Boson_Phi", "Boson_Pt","dmvamet_Phi", "dmvamet_Pt", "dpfmet_Pt", "dpfmet_Phi", "MVAMET_Pt", "recoilslimmedMETsPuppi_Pt", "recoilslimmedMETsPuppi_Phi","recoilslimmedMETsPuppi_LongZ","MVAMET_sumEt","recoilslimmedMETs_Pt", "recoilslimmedMETs_LongZ", "recoilslimmedMETs_Phi", "PhiTrainingResponse", "RecoilTrainingResponse", "PhiCorrectedRecoil_Pt", "PhiCorrectedRecoil_LongZ", "PhiCorrectedRecoil_PerpZ", "PhiCorrectedRecoil_Phi", "PhiCorrectedRecoil_MET", "PhiCorrectedRecoil_METPhi", "LongZCorrectedRecoil_Phi", "LongZCorrectedRecoil_LongZ", "NVertex", "flatPtWeight"
+			],
+			"plotBDTPerformance": true,
+			"plotNNPerformance": true
+		
+		},
+		"trainingdefault":
+		{
+			"nonlinearActivationFuncHidden": "lasagne.nonlinearities.tanh",
+			"nonlinearActivationFuncOutput": "lasagne.nonlinearities.linear",
+			"trainingLossFunction": "lasagne.objectives.squared_error(prediction, target_var)",
+			"testLossFunction": "lasagne.objectives.squared_error(prediction, target_var)",
+			"weightInitHidden": "lasagne.init.GlorotNormal()",
+			"weightInitOutput": "lasagne.init.GlorotUniform()",
+			"useWeightsFromBDT": true,
+			"dropoutInput": 0,
+			"dropoutHidden": 0,
+			"sizeHiddenLayers": 500,
+			"depthHiddenLayers": 3,
+			"batchSize": 200,
+			"trainingEpochs": 20,
+			"targetVariables": 
+				[
+				"Boson_Phi"
+				],
+			"trainingVariables":
+				[
+				"recoilslimmedMETs_Pt",
+			"recoilslimmedMETs_Phi",
+			"recoilslimmedMETs_sumEtFraction",
+			"recoilslimmedMETsPuppi_Pt",
+			"recoilslimmedMETsPuppi_Phi",
+			"recoilslimmedMETsPuppi_sumEtFraction",
+			"recoilpatpfTrackMET_Pt",
+			"recoilpatpfTrackMET_Phi",
+			"recoilpatpfTrackMET_sumEtFraction",
+			"recoilpatpfPUMET_Pt",
+			"recoilpatpfPUMET_Phi",
+			"recoilpatpfPUMET_sumEtFraction",
+			"recoilpatpfNoPUMET_Pt",
+			"recoilpatpfNoPUMET_Phi",
+			"recoilpatpfNoPUMET_sumEtFraction",
+			"recoilpatpfPUCorrectedMET_sumEtFraction",
+			"recoilpatpfPUCorrectedMET_Pt",
+			"recoilpatpfPUCorrectedMET_Phi",
+			"Jet0_Pt", "Jet0_Eta", "Jet0_Phi",
+			"Jet1_Pt", "Jet1_Eta", "Jet1_Phi",
+			"Jet2_Pt", "Jet2_Eta", "Jet2_Phi",
+			"Jet3_Pt", "Jet3_Eta", "Jet3_Phi",
+			"Jet4_Pt", "Jet4_Eta", "Jet4_Phi",
+			"NCleanedJets",
+			"NVertex"
+				],
+			"makeControlPlots": true
+				
+		},
+		"training2" :
+		{
+			"nonlinearActivationFuncHidden": "lasagne.nonlinearities.tanh",
+			"nonlinearActivationFuncOutput": "lasagne.nonlinearities.lin",
+			"dropoutinput": 0,
+			"dropouthidden": 0,
+			"sizeHiddenLayers": 500,
+			"depthHiddenLayers": 2,
+			
+			"targetVariables": 
+				[
+				"Boson_Phi"
+				],
+			"trainingVariables":
+				[
+				"recoilslimmedMETs_Pt",
+			"recoilslimmedMETs_Phi",
+			"recoilslimmedMETs_sumEtFraction",
+			"recoilslimmedMETsPuppi_Pt",
+			"recoilslimmedMETsPuppi_Phi",
+			"recoilslimmedMETsPuppi_sumEtFraction",
+			"recoilpatpfTrackMET_Pt",
+			"recoilpatpfTrackMET_Phi",
+			"recoilpatpfTrackMET_sumEtFraction",
+			"recoilpatpfPUMET_Pt",
+			"recoilpatpfPUMET_Phi",
+			"recoilpatpfPUMET_sumEtFraction",
+			"recoilpatpfNoPUMET_Pt",
+			"recoilpatpfNoPUMET_Phi",
+			"recoilpatpfNoPUMET_sumEtFraction",
+			"recoilpatpfPUCorrectedMET_sumEtFraction",
+			"recoilpatpfPUCorrectedMET_Pt",
+			"recoilpatpfPUCorrectedMET_Phi",
+			"Jet0_Pt", "Jet0_Eta", "Jet0_Phi",
+			"Jet1_Pt", "Jet1_Eta", "Jet1_Phi",
+			"Jet2_Pt", "Jet2_Eta", "Jet2_Phi",
+			"Jet3_Pt", "Jet3_Eta", "Jet3_Phi",
+			"Jet4_Pt", "Jet4_Eta", "Jet4_Phi",
+			"NCleanedJets",
+			"NVertex"
+				]
+		},
+		"training3" :
+		{
+			"nonlinearActivationFuncHidden": "lasagne.nonlinearities.tanh",
+			"nonlinearActivationFuncOutput": "lasagne.nonlinearities.lin",
+			"dropoutinput": 0,
+			"dropouthidden": 0,
+			"sizeHiddenLayers": 500,
+			"depthHiddenLayers": 4,
+			
+			"targetVariables": 
+				[
+				"Boson_Phi"
+				],
+			"trainingVariables":
+				[
+				"recoilslimmedMETs_Pt",
+			"recoilslimmedMETs_Phi",
+			"recoilslimmedMETs_sumEtFraction",
+			"recoilslimmedMETsPuppi_Pt",
+			"recoilslimmedMETsPuppi_Phi",
+			"recoilslimmedMETsPuppi_sumEtFraction",
+			"recoilpatpfTrackMET_Pt",
+			"recoilpatpfTrackMET_Phi",
+			"recoilpatpfTrackMET_sumEtFraction",
+			"recoilpatpfPUMET_Pt",
+			"recoilpatpfPUMET_Phi",
+			"recoilpatpfPUMET_sumEtFraction",
+			"recoilpatpfNoPUMET_Pt",
+			"recoilpatpfNoPUMET_Phi",
+			"recoilpatpfNoPUMET_sumEtFraction",
+			"recoilpatpfPUCorrectedMET_sumEtFraction",
+			"recoilpatpfPUCorrectedMET_Pt",
+			"recoilpatpfPUCorrectedMET_Phi",
+			"Jet0_Pt", "Jet0_Eta", "Jet0_Phi",
+			"Jet1_Pt", "Jet1_Eta", "Jet1_Phi",
+			"Jet2_Pt", "Jet2_Eta", "Jet2_Phi",
+			"Jet3_Pt", "Jet3_Eta", "Jet3_Phi",
+			"Jet4_Pt", "Jet4_Eta", "Jet4_Phi",
+			"NCleanedJets",
+			"NVertex"
+				]
+		}
+}
