@@ -1,44 +1,55 @@
 { 
 	"activeTraining" : "trainingdefault",
 	"activePlotting" : "plottingdefault",
-		"inputFile": "../data/dataMVAMetTrainNew.csv",
-		"outputDir": "../testplots/",
+		"inputFile": "../data/dataMVAMetNewWithEverything.csv",
+		"outputDir": "../plots/Test/",
 		"loadExistingModel": true,
-		"importFileNetworkModel": "modelBoson_PhiSquaredShort.npz",
-		"performTraining": true,
-		"exportFileNetworkModel": "modelBoson_PhiSquaredShort.npz",
-
+		"importFileNetworkModel": "modelBoson_PhiAndPtTest.npz",
+		"performTraining": false,
+		"exportFileNetworkModel": "modelPhiFromSlimmed.npz",
+		"writeResults": true,
+		"resultFile": "results.csv",
 		"plottingdefault":
 		{
 			"plotPlotVariables": true,
+			"splitNCleanedJets": true,
 			"sliceData": true,
-			"BosonCut": 30,
+			"BosonCut": 60,
 			"plotVariables":
 			[
-			"targetPhiFromSlimmed","targetRecoilFromSlimmed","targetRecoilFromBDT", "MVAMET_Phi", "Boson_Phi", "Boson_Pt","dmvamet_Phi", "dmvamet_Pt", "dpfmet_Pt", "dpfmet_Phi", "MVAMET_Pt", "recoilslimmedMETsPuppi_Pt", "recoilslimmedMETsPuppi_Phi","recoilslimmedMETsPuppi_LongZ","MVAMET_sumEt","recoilslimmedMETs_Pt", "recoilslimmedMETs_LongZ", "recoilslimmedMETs_Phi", "PhiTrainingResponse", "RecoilTrainingResponse", "PhiCorrectedRecoil_Pt", "PhiCorrectedRecoil_LongZ", "PhiCorrectedRecoil_PerpZ", "PhiCorrectedRecoil_Phi", "PhiCorrectedRecoil_MET", "PhiCorrectedRecoil_METPhi", "LongZCorrectedRecoil_Phi", "LongZCorrectedRecoil_LongZ", "NVertex", "flatPtWeight"
+			"targetPhiFromSlimmed","targetRecoilFromSlimmed","targetRecoilFromBDT", "Boson_Phi", "Boson_Pt", "recoilslimmedMETsPuppi_Pt", "recoilslimmedMETsPuppi_Phi","recoilslimmedMETsPuppi_LongZ","MVAMET_sumEt","recoilslimmedMETs_Pt", "recoilslimmedMETs_LongZ", "recoilslimmedMETs_Phi", "PhiTrainingResponse", "RecoilTrainingResponse", "PhiCorrectedRecoil_Pt", "PhiCorrectedRecoil_LongZ", "PhiCorrectedRecoil_PerpZ", "PhiCorrectedRecoil_Phi", "PhiCorrectedRecoil_MET", "PhiCorrectedRecoil_METPhi", "LongZCorrectedRecoil_Phi", "LongZCorrectedRecoil_LongZ", "NVertex", "flatPtWeight","flatPtWeightBDT","nCombinations", "fileName","targetX","targetY","Jet0_Pt", "Jet0_Eta", "Jet0_Phi","Jet1_Pt", "Jet1_Eta", "Jet1_Phi","Jet2_Pt", "Jet2_Eta", "Jet2_Phi","Jet3_Pt", "Jet3_Eta", "Jet3_Phi","Jet4_Pt", "Jet4_Eta", "Jet4_Phi","NCleanedJets", "select", "LongZCorrectedRecoil_PerpZ", "recoilslimmedMETs_PerpZ", "recoilslimmedMETsPuppi_PerpZ"
 			],
 			"plotBDTPerformance": true,
-			"plotNNPerformance": true
+			"plotNNPerformance": false
 		
 		},
 		"trainingdefault":
 		{
 			"nonlinearActivationFuncHidden": "lasagne.nonlinearities.tanh",
 			"nonlinearActivationFuncOutput": "lasagne.nonlinearities.linear",
-			"trainingLossFunction": "lasagne.objectives.squared_error(prediction, target_var)",
-			"testLossFunction": "lasagne.objectives.squared_error(prediction, target_var)",
+			"trainingLossFunctionHelper": "",
+			"trainingLossFunction": "T.sqr(prediction- target_var)",
+			"testLossFunction": "T.sqr(test_prediction- target_var)",
+			"testLossFunctionHelper": "",
 			"weightInitHidden": "lasagne.init.GlorotNormal()",
 			"weightInitOutput": "lasagne.init.GlorotUniform()",
-			"useWeightsFromBDT": true,
+			"useWeightsFromBDT": false,
+			"createFlatWeights": false,
+			"maxPtForFlatWeights": 300,
+			"EntriesPerBin": 500,
+			"adjustDimWeight": false,
+			"dimWeightIfAdjust": 0,
+                        "transposeWeight": false,
 			"dropoutInput": 0,
 			"dropoutHidden": 0,
 			"sizeHiddenLayers": 500,
 			"depthHiddenLayers": 3,
 			"batchSize": 200,
 			"trainingEpochs": 20,
+			"cancelAfterUselessEpochs": 5,
 			"targetVariables": 
 				[
-				"Boson_Phi"
+				"Boson_Pt","Boson_Phi"
 				],
 			"trainingVariables":
 				[
@@ -62,69 +73,210 @@
 			"recoilpatpfPUCorrectedMET_Phi",
 			"Jet0_Pt", "Jet0_Eta", "Jet0_Phi",
 			"Jet1_Pt", "Jet1_Eta", "Jet1_Phi",
-			"Jet2_Pt", "Jet2_Eta", "Jet2_Phi",
-			"Jet3_Pt", "Jet3_Eta", "Jet3_Phi",
-			"Jet4_Pt", "Jet4_Eta", "Jet4_Phi",
 			"NCleanedJets",
 			"NVertex"
-				],
-			"makeControlPlots": true
+				]
 				
 		},
-		"training2" :
+		"trainingPhiSinLoss" :
 		{
 			"nonlinearActivationFuncHidden": "lasagne.nonlinearities.tanh",
-			"nonlinearActivationFuncOutput": "lasagne.nonlinearities.lin",
-			"dropoutinput": 0,
-			"dropouthidden": 0,
-			"sizeHiddenLayers": 500,
-			"depthHiddenLayers": 2,
-			
-			"targetVariables": 
-				[
-				"Boson_Phi"
-				],
-			"trainingVariables":
-				[
-				"recoilslimmedMETs_Pt",
-			"recoilslimmedMETs_Phi",
-			"recoilslimmedMETs_sumEtFraction",
-			"recoilslimmedMETsPuppi_Pt",
-			"recoilslimmedMETsPuppi_Phi",
-			"recoilslimmedMETsPuppi_sumEtFraction",
-			"recoilpatpfTrackMET_Pt",
-			"recoilpatpfTrackMET_Phi",
-			"recoilpatpfTrackMET_sumEtFraction",
-			"recoilpatpfPUMET_Pt",
-			"recoilpatpfPUMET_Phi",
-			"recoilpatpfPUMET_sumEtFraction",
-			"recoilpatpfNoPUMET_Pt",
-			"recoilpatpfNoPUMET_Phi",
-			"recoilpatpfNoPUMET_sumEtFraction",
-			"recoilpatpfPUCorrectedMET_sumEtFraction",
-			"recoilpatpfPUCorrectedMET_Pt",
-			"recoilpatpfPUCorrectedMET_Phi",
-			"Jet0_Pt", "Jet0_Eta", "Jet0_Phi",
-			"Jet1_Pt", "Jet1_Eta", "Jet1_Phi",
-			"Jet2_Pt", "Jet2_Eta", "Jet2_Phi",
-			"Jet3_Pt", "Jet3_Eta", "Jet3_Phi",
-			"Jet4_Pt", "Jet4_Eta", "Jet4_Phi",
-			"NCleanedJets",
-			"NVertex"
-				]
+                        "nonlinearActivationFuncOutput": "lasagne.nonlinearities.linear",
+                        "trainingLossFunctionHelper": "rangePhi = (y_trainMVA[:,dictTarget['Boson_Phi']].max() - y_trainMVA[:,dictTarget['Boson_Phi']].min())/2",
+                        "trainingLossFunction": "T.sin((prediction-target_var)*math.pi/(rangePhi*2))**2*((prediction-target_var)*math.pi/(rangePhi*2)>-5./4*math.pi)*((prediction-target_var)*math.pi/(rangePhi*2)<5./4*math.pi) + ((prediction-target_var)*math.pi/(rangePhi*2)+(0.5-5./4*math.pi))*((prediction-target_var)*math.pi/(rangePhi*2)>5./4*math.pi)+ (-(prediction-target_var)*math.pi/(rangePhi*2)+(0.5-5./4*math.pi))*((prediction-target_var)*math.pi/(rangePhi*2)<-5./4*math.pi)",
+                        "testLossFunctionHelper": "rangePhi = (y_trainMVA[:,dictTarget['Boson_Phi']].max() - y_trainMVA[:,dictTarget['Boson_Phi']].min())/2",
+                        "testLossFunction": "T.sin((test_prediction-target_var)*math.pi/(rangePhi*2))**2*((test_prediction-target_var)*math.pi/(rangePhi*2)>-5./4*math.pi)*((test_prediction-target_var)*math.pi/(rangePhi*2)<5./4*math.pi) + ((test_prediction-target_var)*math.pi/(rangePhi*2)+(0.5-5./4*math.pi))*((test_prediction-target_var)*math.pi/(rangePhi*2)>5./4*math.pi)+ (-(test_prediction-target_var)*math.pi/(rangePhi*2)+(0.5-5./4*math.pi))*((test_prediction-target_var)*math.pi/(rangePhi*2)<-5./4*math.pi)",
+                        "weightInitHidden": "lasagne.init.GlorotNormal()",
+                        "weightInitOutput": "lasagne.init.GlorotUniform()",
+                        "useWeightsFromBDT": true,
+                        "adjustDimWeight": false,
+			"dimWeightIfAdjust": 0,
+                        "transposeWeight": false,
+                        "dropoutInput": 0,
+                        "dropoutHidden": 0,
+                        "sizeHiddenLayers": 500,
+                        "depthHiddenLayers": 3,
+                        "batchSize": 200,
+                        "trainingEpochs": 30,
+                        "cancelAfterUselessEpochs": 3,
+                        "targetVariables":
+                                [
+                                "Boson_Phi"
+                                ],
+                        "trainingVariables":
+                                [
+                                "recoilslimmedMETs_Pt",
+                        "recoilslimmedMETs_Phi",
+                        "recoilslimmedMETs_sumEtFraction",
+                        "recoilslimmedMETsPuppi_Pt",
+                        "recoilslimmedMETsPuppi_Phi",
+                        "recoilslimmedMETsPuppi_sumEtFraction",
+                        "recoilpatpfTrackMET_Pt",
+                        "recoilpatpfTrackMET_Phi",
+                        "recoilpatpfTrackMET_sumEtFraction",
+                        "recoilpatpfPUMET_Pt",
+                        "recoilpatpfPUMET_Phi",
+                        "recoilpatpfPUMET_sumEtFraction",
+                        "recoilpatpfNoPUMET_Pt",
+                        "recoilpatpfNoPUMET_Phi",
+                        "recoilpatpfNoPUMET_sumEtFraction",
+                        "recoilpatpfPUCorrectedMET_sumEtFraction",
+                        "recoilpatpfPUCorrectedMET_Pt",
+                        "recoilpatpfPUCorrectedMET_Phi",
+                        "Jet0_Pt", "Jet0_Eta", "Jet0_Phi",
+                        "Jet1_Pt", "Jet1_Eta", "Jet1_Phi",
+                        "Jet2_Pt", "Jet2_Eta", "Jet2_Phi",
+                        "Jet3_Pt", "Jet3_Eta", "Jet3_Phi",
+                        "Jet4_Pt", "Jet4_Eta", "Jet4_Phi",
+                        "NCleanedJets",
+                        "NVertex"
+                                ]
+
 		},
-		"training3" :
+		"trainingPhiAndPt" :
 		{
 			"nonlinearActivationFuncHidden": "lasagne.nonlinearities.tanh",
-			"nonlinearActivationFuncOutput": "lasagne.nonlinearities.lin",
-			"dropoutinput": 0,
-			"dropouthidden": 0,
+                        "nonlinearActivationFuncOutput": "lasagne.nonlinearities.linear",
+                        "trainingLossFunctionHelper": "rangePhi = (y_trainMVA[:,dictTarget['Boson_Phi']].max() - y_trainMVA[:,dictTarget['Boson_Phi']].min())/2",
+                        "trainingLossFunction": "T.sqr(target_var[:,dictTarget['Boson_Pt']]-(prediction[:,dictTarget['Boson_Pt']]*np.cos((target_var[:,dictTarget['Boson_Phi']]-prediction[:,dictTarget['Boson_Phi']])*math.pi/rangePhi)))+prediction[:,dictTarget['Boson_Pt']]**2*(prediction[:,dictTarget['Boson_Pt']]<0)+100*(prediction[:,dictTarget['Boson_Phi']]-2*rangePhi)**2*(prediction[:,dictTarget['Boson_Phi']]>2*rangePhi)+100*(prediction[:,dictTarget['Boson_Phi']]+2*rangePhi)**2*(prediction[:,dictTarget['Boson_Phi']]<-2*rangePhi)",
+                        "testLossFunctionHelper": "rangePhi = (y_trainMVA[:,dictTarget['Boson_Phi']].max() - y_trainMVA[:,dictTarget['Boson_Phi']].min())/2",
+                        "testLossFunction": "lasagne.objectives.squared_error(target_var[:,dictTarget['Boson_Pt']],(test_prediction[:,dictTarget['Boson_Pt']]*np.cos((target_var[:,dictTarget['Boson_Phi']]-test_prediction[:,dictTarget['Boson_Phi']])*math.pi/rangePhi)))",
+                        
+                        "weightInitHidden": "lasagne.init.GlorotNormal()",
+                        "weightInitOutput": "lasagne.init.GlorotUniform()",
+                        "useWeightsFromBDT": false,
+			"createFlatWeights": true,
+			"maxPtForFlatWeights": 300,
+			"EntriesPerBin": 500,
+			"adjustDimWeight": true,
+			"dimWeightIfAdjust": 1,
+                        "transposeWeight": true,
+                        "dropoutInput": 0,
+                        "dropoutHidden": 0,
+                        "sizeHiddenLayers": 500,
+                        "depthHiddenLayers": 3,
+                        "batchSize": 200,
+                        "trainingEpochs": 20,
+                        "cancelAfterUselessEpochs": 3,
+                        "targetVariables":
+                                [
+                                "Boson_Phi",
+                                "Boson_Pt"
+                                ],
+                        "trainingVariables":
+                                [
+                                "recoilslimmedMETs_Pt",
+                        "recoilslimmedMETs_Phi",
+                        "recoilslimmedMETs_sumEtFraction",
+                        "recoilslimmedMETsPuppi_Pt",
+                        "recoilslimmedMETsPuppi_Phi",
+                        "recoilslimmedMETsPuppi_sumEtFraction",
+                        "recoilpatpfTrackMET_Pt",
+                        "recoilpatpfTrackMET_Phi",
+                        "recoilpatpfTrackMET_sumEtFraction",
+                        "recoilpatpfPUMET_Pt",
+                        "recoilpatpfPUMET_Phi",
+                        "recoilpatpfPUMET_sumEtFraction",
+                        "recoilpatpfNoPUMET_Pt",
+                        "recoilpatpfNoPUMET_Phi",
+                        "recoilpatpfNoPUMET_sumEtFraction",
+                        "recoilpatpfPUCorrectedMET_sumEtFraction",
+                        "recoilpatpfPUCorrectedMET_Pt",
+                        "recoilpatpfPUCorrectedMET_Phi",
+                        "Jet0_Pt", "Jet0_Eta", "Jet0_Phi",
+                        "Jet1_Pt", "Jet1_Eta", "Jet1_Phi",
+                        "Jet2_Pt", "Jet2_Eta", "Jet2_Phi",
+                        "Jet3_Pt", "Jet3_Eta", "Jet3_Phi",
+                        "Jet4_Pt", "Jet4_Eta", "Jet4_Phi",
+                        "NCleanedJets",
+                        "NVertex"
+                                ]
+
+		},
+		"trainingPhiAndPtFromSlimmed" :
+		{
+			"nonlinearActivationFuncHidden": "lasagne.nonlinearities.tanh",
+                        "nonlinearActivationFuncOutput": "lasagne.nonlinearities.linear",
+                        "trainingLossFunctionHelper": "",
+                        "trainingLossFunction": "lasagne.objectives.squared_error(target_var[:,dictTarget['Boson_Pt']],(prediction[:,dictTarget['targetRecoilFromSlimmed']]*np.cos(target_var[:,dictTarget['Boson_Phi']]-prediction[:,dictTarget['Boson_Phi']])))",
+                        "testLossFunction": "lasagne.objectives.squared_error(target_var[:,dictTarget['Boson_Pt']],(test_prediction[:,dictTarget['Boson_Pt']]*np.cos(target_var[:,dictTarget['Boson_Phi']]-test_prediction[:,dictTarget['Boson_Phi']])))",
+                        "testLossFunctionHelper": "",
+                        "weightInitHidden": "lasagne.init.GlorotNormal()",
+                        "weightInitOutput": "lasagne.init.GlorotUniform()",
+                        "useWeightsFromBDT": false,
+                        "adjustDimWeight": true,
+			"dimWeightIfAdjust": 1,
+                        "transposeWeight": true,
+                        "dropoutInput": 0,
+                        "dropoutHidden": 0,
+                        "sizeHiddenLayers": 500,
+                        "depthHiddenLayers": 3,
+                        "batchSize": 200,
+                        "trainingEpochs": 30,
+                        "cancelAfterUselessEpochs": 3,
+                        "targetVariables":
+                                [
+                                "targetPhiFromSlimmed",
+                                "targetRecoilFromSlimmed"
+                                ],
+                        "trainingVariables":
+                                [
+                                "recoilslimmedMETs_Pt",
+                        "recoilslimmedMETs_Phi",
+                        "recoilslimmedMETs_sumEtFraction",
+                        "recoilslimmedMETsPuppi_Pt",
+                        "recoilslimmedMETsPuppi_Phi",
+                        "recoilslimmedMETsPuppi_sumEtFraction",
+                        "recoilpatpfTrackMET_Pt",
+                        "recoilpatpfTrackMET_Phi",
+                        "recoilpatpfTrackMET_sumEtFraction",
+                        "recoilpatpfPUMET_Pt",
+                        "recoilpatpfPUMET_Phi",
+                        "recoilpatpfPUMET_sumEtFraction",
+                        "recoilpatpfNoPUMET_Pt",
+                        "recoilpatpfNoPUMET_Phi",
+                        "recoilpatpfNoPUMET_sumEtFraction",
+                        "recoilpatpfPUCorrectedMET_sumEtFraction",
+                        "recoilpatpfPUCorrectedMET_Pt",
+                        "recoilpatpfPUCorrectedMET_Phi",
+                        "Jet0_Pt", "Jet0_Eta", "Jet0_Phi",
+                        "Jet1_Pt", "Jet1_Eta", "Jet1_Phi",
+                        "Jet2_Pt", "Jet2_Eta", "Jet2_Phi",
+                        "Jet3_Pt", "Jet3_Eta", "Jet3_Phi",
+                        "Jet4_Pt", "Jet4_Eta", "Jet4_Phi",
+                        "NCleanedJets",
+                        "NVertex"
+                                ]
+
+
+		},
+		"trainingPhiFromSlimmed":
+		{
+			"nonlinearActivationFuncHidden": "lasagne.nonlinearities.tanh",
+			"nonlinearActivationFuncOutput": "lasagne.nonlinearities.linear",
+			"trainingLossFunctionHelper": "",
+			"trainingLossFunction": "T.sqr(prediction- target_var)",
+			"testLossFunction": "T.sqr(test_prediction- target_var)",
+			"testLossFunctionHelper": "",
+			"weightInitHidden": "lasagne.init.GlorotNormal()",
+			"weightInitOutput": "lasagne.init.GlorotUniform()",
+			"useWeightsFromBDT": false,
+			"createFlatWeights": true,
+			"maxPtForFlatWeights": 300,
+			"EntriesPerBin": 500,
+			"adjustDimWeight": false,
+			"dimWeightIfAdjust": 0,
+                        "transposeWeight": false,
+			"dropoutInput": 0,
+			"dropoutHidden": 0,
 			"sizeHiddenLayers": 500,
-			"depthHiddenLayers": 4,
-			
+			"depthHiddenLayers": 3,
+			"batchSize": 200,
+			"trainingEpochs": 20,
+			"cancelAfterUselessEpochs": 5,
 			"targetVariables": 
 				[
-				"Boson_Phi"
+				"targetPhiFromSlimmed"
 				],
 			"trainingVariables":
 				[
@@ -154,5 +306,7 @@
 			"NCleanedJets",
 			"NVertex"
 				]
+				
 		}
+
 }

@@ -198,25 +198,9 @@ def load_datasetcsv(config):
     print('datentot before: ',inputdatentot.shape)
     print('dictInput length before: ', len(dictInputTot))
     
-    for jetID in range(0,5):
-	if ('Jet%i_Pt'%jetID) in dictInputTot:
-	    jetData = inputdatentot[inputdatentot[:,dictInputTot['Jet%i_Pt'%jetID]] > 30]
-	    print(jetData.shape)
-	    print ('Jet %i fraction above 30 GeV: '%jetID,jetData.shape[0]*1./inputdatentot.shape[0])
-    
-    
     print('shape before cut: ', inputdatentot.shape[0])
-    if 'select' in dictInputTot:
-	inputdatentot = inputdatentot[inputdatentot[:,dictInputTot['select']] == 1]
+    #inputdatentot = inputdatentot[inputdatentot[:,dictInputTot['select']] == 2]
     print('shape after cut: ', inputdatentot.shape[0])
-    
-    for jetID in range(0,5):
-	if ('Jet%i_Pt'%jetID) in dictInputTot:
-	    jetData = inputdatentot[inputdatentot[:,dictInputTot['Jet%i_Pt'%jetID]] > 30]
-	    print ('Jet %i fraction (only muons) above 30 GeV: '%jetID,jetData.shape[0]*1./inputdatentot.shape[0])
-    
-    
-    
     
     inputdatentot, dictInputTot, weights = handleFlatPtWeight(config, inputdatentot, dictInputTot)
   
@@ -255,9 +239,6 @@ def load_datasetcsv(config):
 	#if varwhole[index] == 0:
 	 #   print(header[index]," is not useful (var = 0)")
 	    
-    
-    
-    
     
     
     #targetnames = {"genMet_Pt","genMet_Phi"}
@@ -459,7 +440,7 @@ def make_Plot(variablename, inputData, dictPlot, outputdir):
     plt.ylabel('Hits')
 
 	
-    plt.savefig((outputdir+variablename+".png"))
+    plt.savefig((outputdir+variablename+".svg"))
     plt.clf()
     return 0
     
@@ -472,9 +453,9 @@ def make_ResponseCorrectedPlot(config, XRange, YStd, YResponse, bosonName, targe
     plt.xlabel(targetvariable)
     plt.ylabel('Resolution / Response')
     if ptmax == 0:
-	  plt.savefig(config['outputDir'] + "ControlPlots/ResponseCorrected_%s_vs_%s.png" %(bosonName,targetvariable))
+	  plt.savefig(config['outputDir'] + "ControlPlots/ResponseCorrected_%s_vs_%s.svg" %(bosonName,targetvariable))
     else:
-	  plt.savefig(config['outputDir'] + "ControlPlots/ResponseCorrected(%i<Pt<%i)_%s_vs_%s.png" %(ptmin,ptmax,bosonName,targetvariable))
+	  plt.savefig(config['outputDir'] + "ControlPlots/ResponseCorrected(%i<Pt<%i)_%s_vs_%s.svg" %(ptmin,ptmax,bosonName,targetvariable))
     plt.figure(6)
     plt.plot(XRange[:-1]+stepwidth/2.,ResCorr,'o',label=bosonName)
     plt.figure(0)
@@ -571,18 +552,18 @@ def make_ResolutionPlot(config,plotData,dictPlot, bosonName, targetvariable, res
 		plt.ylabel('(MET Boson PT_Long) - (True Boson Pt)')
 		plt.plot(bins, y, 'r--')
 		if ptmax == 0:
-		    plt.savefig((config['outputDir'] + 'ControlPlots/SingleDistributions/Resolution_%s_vs_%s_%i.png' %(bosonName,targetvariable, index)))
+		    plt.savefig((config['outputDir'] + 'ControlPlots/SingleDistributions/Resolution_%s_vs_%s_%i.svg' %(bosonName,targetvariable, index)))
 		else:
-		    plt.savefig((config['outputDir'] + 'ControlPlots/SingleDistributions/Resolution(%i<Pt<%i)_%s_vs_%s_%i.png' %(ptmin,ptmax,bosonName,targetvariable, index)))
+		    plt.savefig((config['outputDir'] + 'ControlPlots/SingleDistributions/Resolution(%i<Pt<%i)_%s_vs_%s_%i.svg' %(ptmin,ptmax,bosonName,targetvariable, index)))
 		    
     plt.clf()
     plt.plot(XRange[:-1]+stepwidth/2.,YStd[:],'o')
     plt.ylabel('(MET Boson PT_Long) - (True Boson Pt)')
     plt.xlabel(targetvariable)
     if ptmax == 0:
-	plt.savefig(config['outputDir'] + "ControlPlots/Resolution_%s_vs_%s.png" %(bosonName,targetvariable))
+	plt.savefig(config['outputDir'] + "ControlPlots/Resolution_%s_vs_%s.svg" %(bosonName,targetvariable))
     else:
-	plt.savefig(config['outputDir'] + "ControlPlots/Resolution(%i<Pt<%i)_%s_vs_%s.png" %(ptmin,ptmax,bosonName,targetvariable))
+	plt.savefig(config['outputDir'] + "ControlPlots/Resolution(%i<Pt<%i)_%s_vs_%s.svg" %(ptmin,ptmax,bosonName,targetvariable))
     plt.figure(5)
     plt.plot(XRange[:-1]+stepwidth/2.,YStd[:],'o',label=bosonName)
     plt.figure(0)
@@ -666,17 +647,17 @@ def make_ResponsePlot(config, plotData,dictPlot, bosonName, targetvariable, resu
 	    plt.ylabel('(MET Boson PT_Long)/(True Boson Pt)')
 	    plt.plot(bins, y, 'r--')
 	    if ptmax == 0:
-		plt.savefig((config['outputDir'] + 'ControlPlots/SingleDistributions/Response_%s_vs_%s_%i.png' %(bosonName,targetvariable, index)))
+		plt.savefig((config['outputDir'] + 'ControlPlots/SingleDistributions/Response_%s_vs_%s_%i.svg' %(bosonName,targetvariable, index)))
 	    else:
-		plt.savefig((config['outputDir'] + 'ControlPlots/SingleDistributions/Response(%i<Pt<%i)_%s_vs_%s_%i.png' %(ptmin,ptmax,bosonName,targetvariable, index)))
+		plt.savefig((config['outputDir'] + 'ControlPlots/SingleDistributions/Response(%i<Pt<%i)_%s_vs_%s_%i.svg' %(ptmin,ptmax,bosonName,targetvariable, index)))
     plt.clf()
     plt.plot(XRange[:-1]+stepwidth/2.,YMean[:],'o')
 
     plt.xlabel(targetvariable)
     if ptmax == 0:
-	plt.savefig(config['outputDir'] + "ControlPlots/Response_%s_vs_%s.png" %(bosonName,targetvariable))
+	plt.savefig(config['outputDir'] + "ControlPlots/Response_%s_vs_%s.svg" %(bosonName,targetvariable))
     else:
-	plt.savefig(config['outputDir'] + "ControlPlots/Response(%i<Pt<%i)_%s_vs_%s.png" %(ptmin,ptmax,bosonName,targetvariable))
+	plt.savefig(config['outputDir'] + "ControlPlots/Response(%i<Pt<%i)_%s_vs_%s.svg" %(ptmin,ptmax,bosonName,targetvariable))
     plt.clf()
     plt.figure(4)
     plt.plot(XRange[:-1]+stepwidth/2.,YMean[:],'o',label=bosonName)
@@ -763,18 +744,18 @@ def make_ResolutionPerpPlot(config,plotData,dictPlot, bosonName, targetvariable,
 		plt.ylabel('MET Boson PT_Perp')
 		plt.plot(bins, y, 'r--')
 		if ptmax == 0:
-		    plt.savefig((config['outputDir'] + 'ControlPlots/SingleDistributions/ResolutionPerp_%s_vs_%s_%i.png' %(bosonName,targetvariable, index)))
+		    plt.savefig((config['outputDir'] + 'ControlPlots/SingleDistributions/ResolutionPerp_%s_vs_%s_%i.svg' %(bosonName,targetvariable, index)))
 		else:
-		    plt.savefig((config['outputDir'] + 'ControlPlots/SingleDistributions/ResolutionPerp(%i<Pt<%i)_%s_vs_%s_%i.png' %(ptmin,ptmax,bosonName,targetvariable, index)))
+		    plt.savefig((config['outputDir'] + 'ControlPlots/SingleDistributions/ResolutionPerp(%i<Pt<%i)_%s_vs_%s_%i.svg' %(ptmin,ptmax,bosonName,targetvariable, index)))
 		    
     plt.clf()
     plt.plot(XRange[:-1]+stepwidth/2.,YStd[:],'o')
     plt.ylabel('MET Boson PT_Perp')
     plt.xlabel(targetvariable)
     if ptmax == 0:
-	plt.savefig(config['outputDir'] + "ControlPlots/ResolutionPerp_%s_vs_%s.png" %(bosonName,targetvariable))
+	plt.savefig(config['outputDir'] + "ControlPlots/ResolutionPerp_%s_vs_%s.svg" %(bosonName,targetvariable))
     else:
-	plt.savefig(config['outputDir'] + "ControlPlots/ResolutionPerp(%i<Pt<%i)_%s_vs_%s.png" %(ptmin,ptmax,bosonName,targetvariable))
+	plt.savefig(config['outputDir'] + "ControlPlots/ResolutionPerp(%i<Pt<%i)_%s_vs_%s.svg" %(ptmin,ptmax,bosonName,targetvariable))
     plt.figure(8)
     plt.plot(XRange[:-1]+stepwidth/2.,YStd[:],'o',label=bosonName)
     plt.figure(0)
@@ -858,17 +839,17 @@ def make_ResponsePerpPlot(config, plotData,dictPlot, bosonName, targetvariable, 
 	    plt.ylabel('MET Boson PT_Perp')
 	    plt.plot(bins, y, 'r--')
 	    if ptmax == 0:
-		plt.savefig((config['outputDir'] + 'ControlPlots/SingleDistributions/ResponsePerp_%s_vs_%s_%i.png' %(bosonName,targetvariable, index)))
+		plt.savefig((config['outputDir'] + 'ControlPlots/SingleDistributions/ResponsePerp_%s_vs_%s_%i.svg' %(bosonName,targetvariable, index)))
 	    else:
-		plt.savefig((config['outputDir'] + 'ControlPlots/SingleDistributions/ResponsePerp(%i<Pt<%i)_%s_vs_%s_%i.png' %(ptmin,ptmax,bosonName,targetvariable, index)))
+		plt.savefig((config['outputDir'] + 'ControlPlots/SingleDistributions/ResponsePerp(%i<Pt<%i)_%s_vs_%s_%i.svg' %(ptmin,ptmax,bosonName,targetvariable, index)))
     plt.clf()
     plt.plot(XRange[:-1]+stepwidth/2.,YMean[:],'o')
 
     plt.xlabel(targetvariable)
     if ptmax == 0:
-	plt.savefig(config['outputDir'] + "ControlPlots/ResponsePerp_%s_vs_%s.png" %(bosonName,targetvariable))
+	plt.savefig(config['outputDir'] + "ControlPlots/ResponsePerp_%s_vs_%s.svg" %(bosonName,targetvariable))
     else:
-	plt.savefig(config['outputDir'] + "ControlPlots/ResponsePerp(%i<Pt<%i)_%s_vs_%s.png" %(ptmin,ptmax,bosonName,targetvariable))
+	plt.savefig(config['outputDir'] + "ControlPlots/ResponsePerp(%i<Pt<%i)_%s_vs_%s.svg" %(ptmin,ptmax,bosonName,targetvariable))
     plt.clf()
     plt.figure(7)
     plt.plot(XRange[:-1]+stepwidth/2.,YMean[:],'o',label=bosonName)
@@ -930,7 +911,7 @@ def make_MoreBDTPlots(config, plotData, dictPlot):
     plt.hist2d(plotData[:,dictPlot['Boson_Pt']], plotData[:,dictPlot['flatPtWeight']],bins = 80, norm=LogNorm())
     plt.xlabel('Boson Pt')
     plt.ylabel('flat Pt weight')
-    plt.savefig(config['outputDir'] + "/ControlPlots/BosonOverWeights.png")
+    plt.savefig(config['outputDir'] + "/ControlPlots/BosonOverWeights.svg")
     
     num_bins = 50
     
@@ -942,7 +923,7 @@ def make_MoreBDTPlots(config, plotData, dictPlot):
 		n, bins, patches = plt.hist(currentDistri, num_bins, range=[0,plotData[:,dictPlot['Boson_Pt']].max()], alpha=0.5, label=('File %i'%i))
 	plt.xlabel('Boson Pt')
 	plt.ylabel('Entries')
-	plt.savefig(config['outputDir'] + "/ControlPlots/BosonPtSpectrum.png")
+	plt.savefig(config['outputDir'] + "/ControlPlots/BosonPtSpectrum.svg")
 	plt.clf()
       
     histBosonPtLow = plotData[plotData[:,dictPlot['Boson_Pt']]<30,dictPlot['Boson_Pt']]
@@ -950,7 +931,7 @@ def make_MoreBDTPlots(config, plotData, dictPlot):
     n, bins, patches = plt.hist(histBosonPtLow, num_bins, range=[0,30],alpha=0.5)
     plt.xlabel('Boson Pt')
     plt.ylabel('Entries')
-    plt.savefig(config['outputDir'] + "/ControlPlots/LowBosonPtSpectrum.png")
+    plt.savefig(config['outputDir'] + "/ControlPlots/LowBosonPtSpectrum.svg")
     plt.clf()
 
     borders = [0,10,20,30,40,50,60,70,80,90,100]
@@ -971,7 +952,7 @@ def make_MoreBDTPlots(config, plotData, dictPlot):
 	plt.legend(loc='upper right')
 	plt.xlabel('Comparison scalefactor BDT Output and Target. %i GeV < Boson Pt < %i'%(min,min+10))
 	plt.ylabel('Entries')
-	plt.savefig(config['outputDir'] + "/ControlPlots/BDT_Scalefactor_OutputAndTarget%ito%i.png"%(min,min+10))
+	plt.savefig(config['outputDir'] + "/ControlPlots/BDT_Scalefactor_OutputAndTarget%ito%i.svg"%(min,min+10))
 	plt.clf()
 
     
@@ -980,7 +961,7 @@ def make_MoreBDTPlots(config, plotData, dictPlot):
     n, bins, patches = plt.hist(histVarJet0AndBosonPtCut, num_bins,alpha=0.5)
     plt.xlabel('Var Phi (Jet0,BosonPt), BosonPt > 30')
     plt.ylabel('Entries')
-    plt.savefig(config['outputDir'] + "/ControlPlots/VarJet0AndBosonPtCut30.png")
+    plt.savefig(config['outputDir'] + "/ControlPlots/VarJet0AndBosonPtCut30.svg")
     plt.clf()
     
     histVarJet1AndBosonPtCut = np.abs(plotData[30<plotData[:,dictPlot['Boson_Pt']],dictPlot['Boson_Phi']] - plotData[30<plotData[:,dictPlot['Boson_Pt']],dictPlot['Jet1_Phi']])
@@ -989,7 +970,7 @@ def make_MoreBDTPlots(config, plotData, dictPlot):
     n, bins, patches = plt.hist(histVarJet1AndBosonPtCut, num_bins,alpha=0.5)
     plt.xlabel('Var Phi (Jet1,BosonPt), BosonPt > 30')
     plt.ylabel('Entries')
-    plt.savefig(config['outputDir'] + "/ControlPlots/VarJet1AndBosonPtCut30.png")
+    plt.savefig(config['outputDir'] + "/ControlPlots/VarJet1AndBosonPtCut30.svg")
     plt.clf()
     
     histVarJet0AndBosonCleaned = np.abs(plotData[10<plotData[:,dictPlot['Jet0_Pt']],dictPlot['Boson_Phi']] - plotData[10<plotData[:,dictPlot['Jet0_Pt']],dictPlot['Jet0_Phi']])
@@ -997,7 +978,7 @@ def make_MoreBDTPlots(config, plotData, dictPlot):
     n, bins, patches = plt.hist(histVarJet0AndBosonCleaned, num_bins,alpha=0.5)
     plt.xlabel('Var Phi (Jet0,BosonPt), JetPt > 10')
     plt.ylabel('Entries')
-    plt.savefig(config['outputDir'] + "/ControlPlots/VarJet0AndBosonCleaned10.png")
+    plt.savefig(config['outputDir'] + "/ControlPlots/VarJet0AndBosonCleaned10.svg")
     plt.clf()
     
     histVarJet1AndBosonCleaned = np.abs(plotData[10<plotData[:,dictPlot['Jet1_Pt']],dictPlot['Boson_Phi']] - plotData[10<plotData[:,dictPlot['Jet1_Pt']],dictPlot['Jet1_Phi']])
@@ -1006,7 +987,7 @@ def make_MoreBDTPlots(config, plotData, dictPlot):
     n, bins, patches = plt.hist(histVarJet1AndBosonCleaned, num_bins,alpha=0.5)
     plt.xlabel('Var Phi (Jet1,BosonPt), JetPt > 10')
     plt.ylabel('Entries')
-    plt.savefig(config['outputDir'] + "/ControlPlots/VarJet1AndBosonCleaned10.png")
+    plt.savefig(config['outputDir'] + "/ControlPlots/VarJet1AndBosonCleaned10.svg")
     plt.clf()
     
     
@@ -1015,7 +996,7 @@ def make_MoreBDTPlots(config, plotData, dictPlot):
     n, bins, patches = plt.hist(histVarJet0AndBoson, num_bins,alpha=0.5)
     plt.xlabel('Var Phi (Jet0,BosonPt)')
     plt.ylabel('Entries')
-    plt.savefig(config['outputDir'] + "/ControlPlots/VarJet0AndBoson.png")
+    plt.savefig(config['outputDir'] + "/ControlPlots/VarJet0AndBoson.svg")
     plt.clf()
     
     histVarJet1AndBoson = np.abs(plotData[:,dictPlot['Boson_Phi']] - plotData[:,dictPlot['Jet1_Phi']])
@@ -1024,57 +1005,46 @@ def make_MoreBDTPlots(config, plotData, dictPlot):
     n, bins, patches = plt.hist(histVarJet1AndBoson, num_bins,alpha=0.5)
     plt.xlabel('Var Phi (Jet1,BosonPt)')
     plt.ylabel('Entries')
-    plt.savefig(config['outputDir'] + "/ControlPlots/VarJet1AndBoson.png")
+    plt.savefig(config['outputDir'] + "/ControlPlots/VarJet1AndBoson.svg")
     plt.clf()
     
-    histJet0PtSmall = plotData[:,dictPlot['Jet0_Pt']]
+    muData = plotData[plotData[:,dictPlot['select']]==1]
+    eData = plotData[plotData[:,dictPlot['select']]==2]
     
-    n, bins, patches = plt.hist(histJet0PtSmall, num_bins, range=[0, 100],alpha=0.5)
-    plt.xlabel('Jet 0 Pt')
+    plotVariable = 'Boson_Pt'
+    
+    histData = [muData[:,dictPlot[plotVariable]],eData[:,dictPlot[plotVariable]]]
+    names = ['%s - Z to mumu'%plotVariable, '%s - Z to ee'%plotVariable]
+    n, bins, patches = plt.hist(histData, num_bins, range=[0, 300], normed=1, alpha=0.5, label=names)
+    plt.legend(loc='upper right')
+    plt.xlabel('Boson Pt in GeV')
     plt.ylabel('Entries')
-    plt.savefig(config['outputDir'] + "/PlotVariables/Jet0PtSmall.png")
+    plt.savefig(config['outputDir'] + "/ControlPlots/BDT_MuEComparison_%s"%plotVariable)
+    plt.clf()
+
+    plotVariable = 'NVertex'
+    num_bins = 35
+    histData = [muData[:,dictPlot[plotVariable]],eData[:,dictPlot[plotVariable]]]
+    names = ['%s - Z to mumu'%plotVariable, '%s - Z to ee'%plotVariable]
+    n, bins, patches = plt.hist(histData, num_bins, range=[5, 40], normed=1, alpha=0.5, label=names)
+    plt.legend(loc='upper right')
+    plt.xlabel('Boson Pt in GeV')
+    plt.ylabel('Entries')
+    plt.savefig(config['outputDir'] + "/ControlPlots/BDT_MuEComparison_%s"%plotVariable)
     plt.clf()
     
     
+    plotVariable = 'NCleanedJets'
     
-    if 'select' in dictPlot:
-	muData = plotData[plotData[:,dictPlot['select']]==1]
-	eData = plotData[plotData[:,dictPlot['select']]==2]
-	
-	plotVariable = 'Boson_Pt'
-	
-	histData = [muData[:,dictPlot[plotVariable]],eData[:,dictPlot[plotVariable]]]
-	names = ['%s - Z to mumu'%plotVariable, '%s - Z to ee'%plotVariable]
-	n, bins, patches = plt.hist(histData, num_bins, range=[0, 300], normed=1, alpha=0.5, label=names)
-	plt.legend(loc='upper right')
-	plt.xlabel('Boson Pt in GeV')
-	plt.ylabel('Entries')
-	plt.savefig(config['outputDir'] + "/ControlPlots/BDT_MuEComparison_%s"%plotVariable)
-	plt.clf()
-
-	plotVariable = 'NVertex'
-	num_bins = 35
-	histData = [muData[:,dictPlot[plotVariable]],eData[:,dictPlot[plotVariable]]]
-	names = ['%s - Z to mumu'%plotVariable, '%s - Z to ee'%plotVariable]
-	n, bins, patches = plt.hist(histData, num_bins, range=[5, 40], normed=1, alpha=0.5, label=names)
-	plt.legend(loc='upper right')
-	plt.xlabel('Boson Pt in GeV')
-	plt.ylabel('Entries')
-	plt.savefig(config['outputDir'] + "/ControlPlots/BDT_MuEComparison_%s"%plotVariable)
-	plt.clf()
-	
-	
-	plotVariable = 'NCleanedJets'
-	
-	num_bins = 15
-	histData = [muData[:,dictPlot[plotVariable]],eData[:,dictPlot[plotVariable]]]
-	names = ['%s - Z to mumu'%plotVariable, '%s - Z to ee'%plotVariable]
-	n, bins, patches = plt.hist(histData, num_bins, range=[0, 15], normed=1, alpha=0.5, label=names)
-	plt.legend(loc='upper right')
-	plt.xlabel('Boson Pt in GeV')
-	plt.ylabel('Entries')
-	plt.savefig(config['outputDir'] + "/ControlPlots/BDT_MuEComparison_%s"%plotVariable)
-	plt.clf()
+    num_bins = 15
+    histData = [muData[:,dictPlot[plotVariable]],eData[:,dictPlot[plotVariable]]]
+    names = ['%s - Z to mumu'%plotVariable, '%s - Z to ee'%plotVariable]
+    n, bins, patches = plt.hist(histData, num_bins, range=[0, 15], normed=1, alpha=0.5, label=names)
+    plt.legend(loc='upper right')
+    plt.xlabel('Boson Pt in GeV')
+    plt.ylabel('Entries')
+    plt.savefig(config['outputDir'] + "/ControlPlots/BDT_MuEComparison_%s"%plotVariable)
+    plt.clf()
     
     
 
@@ -1098,7 +1068,7 @@ def make_PtSpectrumPlot(config, plotData, dictPlot, maxBosonPt=0, stepwidth=0):
     plt.plot(XRange[:-1],YSum[:],'o')
     plt.xlabel('Boson Pt')
     plt.ylabel('Weighted Boson Pt')
-    plt.savefig(config['outputDir'] + "WeightedBosonPt.png")
+    plt.savefig(config['outputDir'] + "WeightedBosonPt.svg")
     
     plt.clf()
     
@@ -1106,12 +1076,12 @@ def make_PtSpectrumPlot(config, plotData, dictPlot, maxBosonPt=0, stepwidth=0):
     
     num_bins = 50
     n, bins, patches = plt.hist(plotData[:,dictPlot['Boson_Pt']], num_bins, facecolor='green', alpha=0.5, weights=weightPt)
-    plt.savefig(config['outputDir'] + "WeightedBosonPtHist.png")
+    plt.savefig(config['outputDir'] + "WeightedBosonPtHist.svg")
     plt.clf()
     
     if 'flatPtWeightBDT' in dictPlot:
 	n, bins, patches = plt.hist(plotData[:,dictPlot['Boson_Pt']], num_bins, facecolor='green', alpha=0.5, weights=plotData[:,dictPlot['flatPtWeightBDT']])
-	plt.savefig(config['outputDir'] + "WeightedBosonPtHistBDT.png")
+	plt.savefig(config['outputDir'] + "WeightedBosonPtHistBDT.svg")
 	plt.clf()
     
  
@@ -1133,7 +1103,7 @@ def make_PhiVariancePlot(config, plotData, dictPlot, targetvariable, ptmin, ptma
     n, bins, patches = plt.hist(histDataPhi, num_bins, facecolor='green', alpha=0.5)
     plt.xlabel('Variance %s from true Boson Phi (%i < Boson Pt < %i)GeV. MSE: %f'%(xlabelname, ptmin, ptmax, MSE))
     plt.ylabel('Entries')
-    plt.savefig(config['outputDir'] + "PhiVariance%s_%ito%iPt.png"%(xlabelname,ptmin,ptmax))
+    plt.savefig(config['outputDir'] + "PhiVariance%s_%ito%iPt.svg"%(xlabelname,ptmin,ptmax))
     plt.clf()
     print('MSE %s (%i<Pt<%i): '%(xlabelname,ptmin,ptmax),MSE)    
 
@@ -1142,7 +1112,7 @@ def make_PhiVariancePlot(config, plotData, dictPlot, targetvariable, ptmin, ptma
     #plt.ylim([-0.25,0.25])
     plt.xlabel('Boson Phi (%i < Boson Pt < %i)GeV'%(ptmin, ptmax))
     plt.ylabel('Variance of (Prediction-Target) %s'%xlabelname)
-    plt.savefig(config['outputDir'] + "Variance2D_%s(%i<Pt<%i).png"%(xlabelname,ptmin,ptmax))
+    plt.savefig(config['outputDir'] + "Variance2D_%s(%i<Pt<%i).svg"%(xlabelname,ptmin,ptmax))
     plt.clf()
 
     
@@ -1246,7 +1216,7 @@ def plot_results(config, plotData, dictPlot, meanTarget, stdTarget, dictTarget):
 		n, bins, patches = plt.hist(histDataVarianceBDT, num_bins, range=[-2, 4], facecolor='green', alpha=0.5)
 		plt.xlabel('Scalefactor variance (BDT-Target). (%i  < Boson Pt < %i)GeV, mean: %f'%(min,bosonmax[i],histDataVarianceBDT.mean()))
 		plt.ylabel('Entries')
-		plt.savefig(config['outputDir'] + "BDT_Scalefactor_VarianceOutputandTarget%ito%i.png"%(min,bosonmax[i]))
+		plt.savefig(config['outputDir'] + "BDT_Scalefactor_VarianceOutputandTarget%ito%i.svg"%(min,bosonmax[i]))
 		plt.clf()
 		
 		histDataAtOnce = [histDataTargetBDT,histDataOutputBDT]
@@ -1256,7 +1226,7 @@ def plot_results(config, plotData, dictPlot, meanTarget, stdTarget, dictTarget):
 		plt.legend(loc='upper right')
 		plt.xlabel('Comparison scalefactor BDT Output and Target. %i GeV < Boson Pt < %i'%(min,bosonmax[i]))
 		plt.ylabel('Entries')
-		plt.savefig(config['outputDir'] + "BDT_Scalefactor_OutputAndTarget%ito%i.png"%(min,bosonmax[i]))
+		plt.savefig(config['outputDir'] + "BDT_Scalefactor_OutputAndTarget%ito%i.svg"%(min,bosonmax[i]))
 		plt.clf()
 	
 		
@@ -1279,7 +1249,7 @@ def plot_results(config, plotData, dictPlot, meanTarget, stdTarget, dictTarget):
 		    n, bins, patches = plt.hist(histDataNNresponse, num_bins, facecolor='green', alpha=0.5)
 		    plt.xlabel('NN output %s (%i<Pt<%i)'%(targetname,min,bosonmax[i]))
 		    plt.ylabel('Entries')
-		    plt.savefig(config['outputDir'] + "NNPlots/NNresponse(%i<Pt<%i)_%s.png"%(min,bosonmax[i],targetname))
+		    plt.savefig(config['outputDir'] + "NNPlots/NNresponse(%i<Pt<%i)_%s.svg"%(min,bosonmax[i],targetname))
 		    plt.clf()
 		    
 		    histDataNN = slicedData[:,dictPlot[targetname]] - slicedData[:,dictPlot['NNOutput_%s'%targetname]]
@@ -1297,7 +1267,7 @@ def plot_results(config, plotData, dictPlot, meanTarget, stdTarget, dictTarget):
 			n, bins, patches = plt.hist(histDataNN, num_bins, facecolor='green', alpha=0.5)
 			plt.xlabel('Variance %s from true Boson Phi (%i < Boson Pt < %i). MSE: %f'%('NN_OutputPhi', min, bosonmax[i], MSE))
 			plt.ylabel('Entries')
-			plt.savefig(config['outputDir'] + "NNPlots/PhiVarianceNNOutputPhi(%i<Pt<%i).png"%(min,bosonmax[i]))
+			plt.savefig(config['outputDir'] + "NNPlots/PhiVarianceNNOutputPhi(%i<Pt<%i).svg"%(min,bosonmax[i]))
 			plt.clf()
 			
 			
@@ -1320,20 +1290,20 @@ def plot_results(config, plotData, dictPlot, meanTarget, stdTarget, dictTarget):
 			n, bins, patches = plt.hist(histDataNN, num_bins, facecolor='green', alpha=0.5)
 			plt.xlabel('Variance %s from true Boson Phi (%i < Boson Pt < %i). MSE: %f'%('NNOutput_targetPhiFromSlimmed', min, bosonmax[i], MSE))
 			plt.ylabel('Entries')
-			plt.savefig(config['outputDir'] + "NNPlots/PhiVariance%s(%i<Pt<%i).png"%('NNOutput_targetPhiFromSlimmed',min,bosonmax[i]))
+			plt.savefig(config['outputDir'] + "NNPlots/PhiVariance%s(%i<Pt<%i).svg"%('NNOutput_targetPhiFromSlimmed',min,bosonmax[i]))
 			plt.clf()
 		    elif 'NNOutput_targetX' in dictPlot:
 			n, bins, patches = plt.hist(histDataNN, num_bins, facecolor='green', alpha=0.5)
 			plt.xlabel('Target - %s (%i < Boson Pt < %i)'%(targetname,min,bosonmax[i]))
 			plt.ylabel('Entries')
-			plt.savefig(config['outputDir'] + "NNPlots/NNVariance_%s(%i<Pt<%i).png"%(targetname,min,bosonmax[i]))
+			plt.savefig(config['outputDir'] + "NNPlots/NNVariance_%s(%i<Pt<%i).svg"%(targetname,min,bosonmax[i]))
 			plt.clf()
 				
 		    else:
 			n, bins, patches = plt.hist(histDataNN, num_bins, facecolor='green', alpha=0.5)
 			plt.xlabel('Target - %s (%i < Boson Pt < %i)'%(targetname,min,bosonmax[i]))
 			plt.ylabel('Entries')
-			plt.savefig(config['outputDir'] + "NNPlots/NNVariance_%s(%i<Pt<%i).png"%(targetname,min,bosonmax[i]))
+			plt.savefig(config['outputDir'] + "NNPlots/NNVariance_%s(%i<Pt<%i).svg"%(targetname,min,bosonmax[i]))
 			plt.clf()
 		    
 		    
@@ -1342,7 +1312,7 @@ def plot_results(config, plotData, dictPlot, meanTarget, stdTarget, dictTarget):
 		    #plt.ylim([-0.25,0.25])
 		    plt.xlabel(targetname)
 		    plt.ylabel('Variance of (Prediction-Target)')
-		    plt.savefig(config['outputDir'] + "NNPlots/NNVariance2D_%s(%i<Pt<%i).png"%(targetname,min,bosonmax[i]))
+		    plt.savefig(config['outputDir'] + "NNPlots/NNVariance2D_%s(%i<Pt<%i).svg"%(targetname,min,bosonmax[i]))
 		    plt.clf()
 		
 		if 'NN_LongZ' in dictPlot:
@@ -1421,13 +1391,13 @@ def plot_results(config, plotData, dictPlot, meanTarget, stdTarget, dictTarget):
 	    n, bins, patches = plt.hist(DPhiFromKart, num_bins, facecolor='green', alpha=0.5)
 	    plt.xlabel('Delta Phi from X,Y Prediction')
 	    plt.ylabel('Entries')
-	    plt.savefig(config['outputDir'] + "NNPlots/NNVariancePhiXY.png")
+	    plt.savefig(config['outputDir'] + "NNPlots/NNVariancePhiXY.svg")
 	    plt.clf()
 	    
 	    n, bins, patches = plt.hist(DPtFromKart, num_bins, facecolor='green', alpha=0.5)
 	    plt.xlabel('Delta Pt from X,Y Prediction')
 	    plt.ylabel('Entries')
-	    plt.savefig(config['outputDir'] + "NNPlots/NNVariancePtXY.png")
+	    plt.savefig(config['outputDir'] + "NNPlots/NNVariancePtXY.svg")
 	    plt.clf()
 
     plt.figure(4)

@@ -66,7 +66,7 @@ def writeResult(config, resultData, dictResult):
 	print('datacsv: ',len(datacsv))
     
 	for row in datacsv:
-	    if row[0] == config['inputFile'][18:-4]:
+	    if row[0] == 'SlimmedMet':
 		addEntry = False
     
 	variablescsv = datacsv[0]
@@ -94,7 +94,7 @@ def writeResult(config, resultData, dictResult):
 	print('Adding new file!')
 	with open(config['resultFile'], 'a') as f:
 	    writer = csv.writer(f)
-	    writer.writerow([config['inputFile'][18:-4]] + [resultData[0,dictResult[variablescsv[index]]] for index in range(1,len(variablescsv))] )
+	    writer.writerow(['SlimmedMet'] + [resultData[0,dictResult[variablescsv[index]]] for index in range(1,len(variablescsv))] )
 
     """
     for row in datacsv:
@@ -194,39 +194,30 @@ def load_datasetcsv(config):
     dictInputTot = {}
     for index in range(0,header.shape[0]):
 	dictInputTot[header[index]] = index
+	
+
     
     print('datentot before: ',inputdatentot.shape)
     print('dictInput length before: ', len(dictInputTot))
     
-    for jetID in range(0,5):
-	if ('Jet%i_Pt'%jetID) in dictInputTot:
-	    jetData = inputdatentot[inputdatentot[:,dictInputTot['Jet%i_Pt'%jetID]] > 30]
-	    print(jetData.shape)
-	    print ('Jet %i fraction above 30 GeV: '%jetID,jetData.shape[0]*1./inputdatentot.shape[0])
     
-    
-    print('shape before cut: ', inputdatentot.shape[0])
-    if 'select' in dictInputTot:
-	inputdatentot = inputdatentot[inputdatentot[:,dictInputTot['select']] == 1]
-    print('shape after cut: ', inputdatentot.shape[0])
-    
-    for jetID in range(0,5):
-	if ('Jet%i_Pt'%jetID) in dictInputTot:
-	    jetData = inputdatentot[inputdatentot[:,dictInputTot['Jet%i_Pt'%jetID]] > 30]
-	    print ('Jet %i fraction (only muons) above 30 GeV: '%jetID,jetData.shape[0]*1./inputdatentot.shape[0])
-    
-    
+    #apply Cut on Data
+    #print('Entries before cut: ', inputdatentot.shape[0])
+    #inputdatentot = inputdatentot[dictInputTot['select'] == 1] 
+    #print('Entries after cut: ', inputdatentot.shape[0])
     
     
     inputdatentot, dictInputTot, weights = handleFlatPtWeight(config, inputdatentot, dictInputTot)
-  
+    
 
     print('datentot after: ',inputdatentot.shape)
     print('dictInput length after:', len(dictInputTot))
     #print(header.shape)
     #print(inputdatentot.shape)
     
-
+    
+    
+    
     
     stupidData = inputdatentot[inputdatentot[:,dictInputTot['targetRecoilFromBDT']]>1000]
     stupidData = np.vstack((stupidData,inputdatentot[inputdatentot[:,dictInputTot['targetRecoilFromBDT']]<-1000]))
@@ -246,31 +237,6 @@ def load_datasetcsv(config):
 	    print("max:", maxwhole[index])
 
     
-    #for index in range(header.shape[0]):
-	#print('stupidPoint ',header[index],' - ',stupidData[0,index]) 
-    
-    
-    
-    #for index in range(0,header.shape[0]):
-	#if varwhole[index] == 0:
-	 #   print(header[index]," is not useful (var = 0)")
-	    
-    
-    
-    
-    
-    
-    #targetnames = {"genMet_Pt","genMet_Phi"}
-    """
-    for index in range(0,header.shape[0]):
-	if header[index] == "Boson_Phi":
-	    boson_Phi = index
-	if header[index] == "recoilpatpfMETT1_Phi":
-	    recoilpatpfMETT1_Phi = index
-    """
-    
-    
-    #header = np.vstack((header.reshape(header.shape[0],1),np.array('targetrecoilNN').reshape(1,1)))
     print('inputdatenshape: ', inputdatentot.shape)    
 
     
@@ -464,11 +430,11 @@ def make_Plot(variablename, inputData, dictPlot, outputdir):
     return 0
     
     
-def make_ResponseCorrectedPlot(config, XRange, YStd, YResponse, bosonName, targetvariable, resultData, dictResult, minrange,maxrange, stepwidth, ptmin,ptmax):
+def make_ResponseCorrectedPlot(config, XRange, YStd, YResponse, bosonName, targetvariable, resultData, dictResult, minrange,maxrange, ptmin,ptmax):
 
     plt.clf()
     ResCorr = YStd[:]/YResponse[:]
-    plt.plot(XRange[:-1]+stepwidth/2.,ResCorr,'o')
+    plt.plot(XRange[:-1],ResCorr,'o')
     plt.xlabel(targetvariable)
     plt.ylabel('Resolution / Response')
     if ptmax == 0:
@@ -476,13 +442,13 @@ def make_ResponseCorrectedPlot(config, XRange, YStd, YResponse, bosonName, targe
     else:
 	  plt.savefig(config['outputDir'] + "ControlPlots/ResponseCorrected(%i<Pt<%i)_%s_vs_%s.png" %(ptmin,ptmax,bosonName,targetvariable))
     plt.figure(6)
-    plt.plot(XRange[:-1]+stepwidth/2.,ResCorr,'o',label=bosonName)
+    plt.plot(XRange[:-1],ResCorr,'o',label=bosonName)
     plt.figure(0)
     plt.clf()    
     
     
-    if bosonName == 'LongZCorrectedRecoil_LongZ':
-    #if bosonName == 'recoilslimmedMETs_LongZ':
+    #if bosonName == 'LongZCorrectedRecoil_LongZ':
+    if bosonName == 'recoilslimmedMETs_LongZ':
 	if ptmax > config[config['activePlotting']]['BosonCut']:
 	    Upper = 'Max'
 	else:
@@ -576,7 +542,7 @@ def make_ResolutionPlot(config,plotData,dictPlot, bosonName, targetvariable, res
 		    plt.savefig((config['outputDir'] + 'ControlPlots/SingleDistributions/Resolution(%i<Pt<%i)_%s_vs_%s_%i.png' %(ptmin,ptmax,bosonName,targetvariable, index)))
 		    
     plt.clf()
-    plt.plot(XRange[:-1]+stepwidth/2.,YStd[:],'o')
+    plt.plot(XRange[:-1],YStd[:],'o')
     plt.ylabel('(MET Boson PT_Long) - (True Boson Pt)')
     plt.xlabel(targetvariable)
     if ptmax == 0:
@@ -584,13 +550,13 @@ def make_ResolutionPlot(config,plotData,dictPlot, bosonName, targetvariable, res
     else:
 	plt.savefig(config['outputDir'] + "ControlPlots/Resolution(%i<Pt<%i)_%s_vs_%s.png" %(ptmin,ptmax,bosonName,targetvariable))
     plt.figure(5)
-    plt.plot(XRange[:-1]+stepwidth/2.,YStd[:],'o',label=bosonName)
+    plt.plot(XRange[:-1],YStd[:],'o',label=bosonName)
     plt.figure(0)
     plt.clf()
     
     
-    if bosonName == 'LongZCorrectedRecoil_LongZ':
-    #if bosonName == 'recoilslimmedMETs_LongZ':
+    #if bosonName == 'LongZCorrectedRecoil_LongZ':
+    if bosonName == 'recoilslimmedMETs_LongZ':
 	if ptmax > config[config['activePlotting']]['BosonCut']:
 	    Upper = 'Max'
 	else:
@@ -670,7 +636,7 @@ def make_ResponsePlot(config, plotData,dictPlot, bosonName, targetvariable, resu
 	    else:
 		plt.savefig((config['outputDir'] + 'ControlPlots/SingleDistributions/Response(%i<Pt<%i)_%s_vs_%s_%i.png' %(ptmin,ptmax,bosonName,targetvariable, index)))
     plt.clf()
-    plt.plot(XRange[:-1]+stepwidth/2.,YMean[:],'o')
+    plt.plot(XRange[:-1],YMean[:],'o')
 
     plt.xlabel(targetvariable)
     if ptmax == 0:
@@ -679,12 +645,12 @@ def make_ResponsePlot(config, plotData,dictPlot, bosonName, targetvariable, resu
 	plt.savefig(config['outputDir'] + "ControlPlots/Response(%i<Pt<%i)_%s_vs_%s.png" %(ptmin,ptmax,bosonName,targetvariable))
     plt.clf()
     plt.figure(4)
-    plt.plot(XRange[:-1]+stepwidth/2.,YMean[:],'o',label=bosonName)
+    plt.plot(XRange[:-1],YMean[:],'o',label=bosonName)
     plt.figure(0)
     
 
-    if bosonName == 'LongZCorrectedRecoil_LongZ':
-    #if bosonName == 'recoilslimmedMETs_LongZ':
+    #if bosonName == 'LongZCorrectedRecoil_LongZ':
+    if bosonName == 'recoilslimmedMETs_LongZ':
 	if ptmax > config[config['activePlotting']]['BosonCut']:
 	    Upper = 'Max'
 	else:
@@ -781,8 +747,8 @@ def make_ResolutionPerpPlot(config,plotData,dictPlot, bosonName, targetvariable,
     plt.clf()
     
 
-    if bosonName == 'LongZCorrectedRecoil_PerpZ':
-    #if bosonName == 'recoilslimmedMETs_LongZ':
+    #if bosonName == 'LongZCorrectedRecoil_PerpZ':
+    if bosonName == 'recoilslimmedMETs_PerpZ':
 	if ptmax > config[config['activePlotting']]['BosonCut']:
 	    Upper = 'Max'
 	else:
@@ -875,8 +841,8 @@ def make_ResponsePerpPlot(config, plotData,dictPlot, bosonName, targetvariable, 
     plt.figure(0)
     
 
-    if bosonName == 'LongZCorrectedRecoil_PerpZ':
-    #if bosonName == 'recoilslimmedMETs_LongZ':
+    #if bosonName == 'LongZCorrectedRecoil_PerpZ':
+    if bosonName == 'recoilslimmedMETs_PerpZ':
 	if ptmax > config[config['activePlotting']]['BosonCut']:
 	    Upper = 'Max'
 	else:
@@ -918,10 +884,11 @@ def make_ControlPlots(config, plotData,dictPlot, bosonName, targetvariable, resu
 	os.makedirs((config['outputDir'] + 'ControlPlots/SingleDistributions/'))
     resultData, dictResult, XRange, YVariance = make_ResolutionPlot(config, plotData, dictPlot, bosonNameLong, targetvariable, resultData, dictResult, minrange,maxrange,stepwidth, ptmin, ptmax) 
     resultData, dictResult, YResponse = make_ResponsePlot(config, plotData, dictPlot, bosonNameLong, targetvariable, resultData, dictResult, minrange,maxrange,stepwidth, ptmin, ptmax)
-    resultData, dictResult = make_ResponseCorrectedPlot(config, XRange, YVariance, YResponse, bosonNameLong, targetvariable, resultData, dictResult, minrange,maxrange, stepwidth, ptmin, ptmax)
+    resultData, dictResult = make_ResponseCorrectedPlot(config, XRange, YVariance, YResponse, bosonNameLong, targetvariable, resultData, dictResult, minrange,maxrange, ptmin, ptmax)
     resultData, dictResult = make_ResolutionPerpPlot(config, plotData, dictPlot, bosonNamePerp, targetvariable, resultData, dictResult, minrange,maxrange,stepwidth, ptmin, ptmax) 
     resultData, dictResult = make_ResponsePerpPlot(config, plotData, dictPlot, bosonNamePerp, targetvariable, resultData, dictResult, minrange,maxrange,stepwidth, ptmin, ptmax)
     return resultData, dictResult
+
 
     
 def make_MoreBDTPlots(config, plotData, dictPlot):
@@ -1027,57 +994,7 @@ def make_MoreBDTPlots(config, plotData, dictPlot):
     plt.savefig(config['outputDir'] + "/ControlPlots/VarJet1AndBoson.png")
     plt.clf()
     
-    histJet0PtSmall = plotData[:,dictPlot['Jet0_Pt']]
     
-    n, bins, patches = plt.hist(histJet0PtSmall, num_bins, range=[0, 100],alpha=0.5)
-    plt.xlabel('Jet 0 Pt')
-    plt.ylabel('Entries')
-    plt.savefig(config['outputDir'] + "/PlotVariables/Jet0PtSmall.png")
-    plt.clf()
-    
-    
-    
-    if 'select' in dictPlot:
-	muData = plotData[plotData[:,dictPlot['select']]==1]
-	eData = plotData[plotData[:,dictPlot['select']]==2]
-	
-	plotVariable = 'Boson_Pt'
-	
-	histData = [muData[:,dictPlot[plotVariable]],eData[:,dictPlot[plotVariable]]]
-	names = ['%s - Z to mumu'%plotVariable, '%s - Z to ee'%plotVariable]
-	n, bins, patches = plt.hist(histData, num_bins, range=[0, 300], normed=1, alpha=0.5, label=names)
-	plt.legend(loc='upper right')
-	plt.xlabel('Boson Pt in GeV')
-	plt.ylabel('Entries')
-	plt.savefig(config['outputDir'] + "/ControlPlots/BDT_MuEComparison_%s"%plotVariable)
-	plt.clf()
-
-	plotVariable = 'NVertex'
-	num_bins = 35
-	histData = [muData[:,dictPlot[plotVariable]],eData[:,dictPlot[plotVariable]]]
-	names = ['%s - Z to mumu'%plotVariable, '%s - Z to ee'%plotVariable]
-	n, bins, patches = plt.hist(histData, num_bins, range=[5, 40], normed=1, alpha=0.5, label=names)
-	plt.legend(loc='upper right')
-	plt.xlabel('Boson Pt in GeV')
-	plt.ylabel('Entries')
-	plt.savefig(config['outputDir'] + "/ControlPlots/BDT_MuEComparison_%s"%plotVariable)
-	plt.clf()
-	
-	
-	plotVariable = 'NCleanedJets'
-	
-	num_bins = 15
-	histData = [muData[:,dictPlot[plotVariable]],eData[:,dictPlot[plotVariable]]]
-	names = ['%s - Z to mumu'%plotVariable, '%s - Z to ee'%plotVariable]
-	n, bins, patches = plt.hist(histData, num_bins, range=[0, 15], normed=1, alpha=0.5, label=names)
-	plt.legend(loc='upper right')
-	plt.xlabel('Boson Pt in GeV')
-	plt.ylabel('Entries')
-	plt.savefig(config['outputDir'] + "/ControlPlots/BDT_MuEComparison_%s"%plotVariable)
-	plt.clf()
-    
-    
-
 
 def make_PtSpectrumPlot(config, plotData, dictPlot, maxBosonPt=0, stepwidth=0):
 
@@ -1172,25 +1089,25 @@ def plot_results(config, plotData, dictPlot, meanTarget, stdTarget, dictTarget):
     
 	
     if 'NNOutput_Boson_Phi' in dictPlot and 'NNOutput_Boson_Pt' in dictPlot:
-	NN_LongZ = -plotData[:, dictPlot['NNOutput_Boson_Pt']]*np.cos(plotData[:, dictPlot['Boson_Phi']]-plotData[:, dictPlot['NNOutput_Boson_Phi']])
-	dictPlot["NN_LongZ"] = plotData.shape[1]
-	plotData = np.hstack((plotData, np.array(NN_LongZ.reshape(NN_LongZ.shape[0],1))))
+	NNLong = -plotData[:, dictPlot['NNOutput_Boson_Pt']]*np.cos(plotData[:, dictPlot['Boson_Phi']]-plotData[:, dictPlot['NNOutput_Boson_Phi']])
+	dictPlot["NNLong"] = plotData.shape[1]
+	plotData = np.hstack((plotData, np.array(NNLong.reshape(NNLong.shape[0],1))))
     elif 'NNOutput_Boson_Phi' in dictPlot:
-	NN_LongZ = -plotData[:, dictPlot['recoilslimmedMETs_Pt']]*np.cos(plotData[:, dictPlot['Boson_Phi']]-plotData[:, dictPlot['NNOutput_Boson_Phi']])
-	dictPlot["NN_LongZ"] = plotData.shape[1]
-	plotData = np.hstack((plotData, np.array(NN_LongZ.reshape(NN_LongZ.shape[0],1))))
+	NNLong = -plotData[:, dictPlot['recoilslimmedMETs_Pt']]*np.cos(plotData[:, dictPlot['Boson_Phi']]-plotData[:, dictPlot['NNOutput_Boson_Phi']])
+	dictPlot["NNLong"] = plotData.shape[1]
+	plotData = np.hstack((plotData, np.array(NNLong.reshape(NNLong.shape[0],1))))
     elif 'NNOutput_targetPhiFromSlimmed' in dictPlot:
-	NN_LongZ = -plotData[:, dictPlot['recoilslimmedMETs_Pt']]*np.cos(math.pi + plotData[:, dictPlot['Boson_Phi']]-plotData[:, dictPlot['NNOutput_targetPhiFromSlimmed']]-plotData[:, dictPlot['recoilslimmedMETs_Phi']])
-	dictPlot["NN_LongZ"] = plotData.shape[1]
-	plotData = np.hstack((plotData, np.array(NN_LongZ.reshape(NN_LongZ.shape[0],1))))
+	NNLong = -plotData[:, dictPlot['recoilslimmedMETs_Pt']]*np.cos(math.pi + plotData[:, dictPlot['Boson_Phi']]-plotData[:, dictPlot['NNOutput_targetPhiFromSlimmed']]-plotData[:, dictPlot['recoilslimmedMETs_Phi']])
+	dictPlot["NNLong"] = plotData.shape[1]
+	plotData = np.hstack((plotData, np.array(NNLong.reshape(NNLong.shape[0],1))))
     
     
     elif 'NNOutput_targetX' in dictPlot:
 	PhiFromKart = np.arctan( plotData[:,dictPlot['NNOutput_targetY']]/plotData[:,dictPlot['NNOutput_targetX']])
 	PtFromKart = np.sqrt( plotData[:,dictPlot['NNOutput_targetY']]**2+plotData[:,dictPlot['NNOutput_targetX']]**2)
-	NN_LongZ = -PtFromKart*np.cos(plotData[:, dictPlot['Boson_Phi']]-PhiFromKart)
-	dictPlot["NN_LongZ"] = plotData.shape[1]
-	plotData = np.hstack((plotData, np.array(NN_LongZ.reshape(NN_LongZ.shape[0],1))))
+	NNLong = -PtFromKart*np.cos(plotData[:, dictPlot['Boson_Phi']]-PhiFromKart)
+	dictPlot["NNLong"] = plotData.shape[1]
+	plotData = np.hstack((plotData, np.array(NNLong.reshape(NNLong.shape[0],1))))
 
     if not os.path.exists(config['outputDir']):
 	os.makedirs(config['outputDir'])
@@ -1272,7 +1189,7 @@ def plot_results(config, plotData, dictPlot, meanTarget, stdTarget, dictTarget):
 	    if plotconfig['plotNNPerformance']:
 		if not os.path.exists(config['outputDir'] + 'NNPlots'):
 		    os.makedirs(config['outputDir'] + 'NNPlots')
-		
+
 		for targetname in dictTarget:
 		    histDataNNresponse = slicedData[:,dictPlot['NNOutput_%s'%targetname]]
 		    
@@ -1345,8 +1262,8 @@ def plot_results(config, plotData, dictPlot, meanTarget, stdTarget, dictTarget):
 		    plt.savefig(config['outputDir'] + "NNPlots/NNVariance2D_%s(%i<Pt<%i).png"%(targetname,min,bosonmax[i]))
 		    plt.clf()
 		
-		if 'NN_LongZ' in dictPlot:
-			resultData, dictResult = make_ControlPlots(config, slicedData, dictPlot, 'NN', 'NVertex',resultData, dictResult, 5,40,5,min,bosonmax[i])
+		if 'NNLong' in dictPlot:
+			resultData, dictResult = make_ControlPlots(config, slicedData, dictPlot, 'NNLong', 'NVertex',resultData, dictResult, 5,40,5,min,bosonmax[i])
       
 	    
 	    #slimmedMet
@@ -1376,20 +1293,6 @@ def plot_results(config, plotData, dictPlot, meanTarget, stdTarget, dictTarget):
 	    legend.get_frame().set_alpha(0.5)
 	    plt.savefig(config['outputDir'] + 'ResponseCorrected_(%i<Pt<%i)_vs_NVertex'%(min,bosonmax[i]))
 	    plt.clf()
-	    plt.figure(7)
-	    legend = plt.legend(loc='lower right', shadow=True)
-	    legend.get_frame().set_alpha(0.5)
-	    plt.xlabel('N Vertex (%i < Boson Pt < %i)'%(min,bosonmax[i]))
-	    plt.ylabel('MET Boson PT_Perp')
-	    plt.savefig(config['outputDir'] + 'ResponsePerp_(%i<Pt<%i)_vs_NVertex'%(min,bosonmax[i]))
-	    plt.clf()
-	    plt.figure(8)
-	    plt.xlabel('N Vertex (%i < Boson Pt < %i)'%(min,bosonmax[i]))
-	    plt.ylabel('MET Boson PT_Perp')
-	    legend = plt.legend(loc='lower right', shadow=True)
-	    legend.get_frame().set_alpha(0.5)
-	    plt.savefig(config['outputDir'] + 'ResolutionPerp_(%i<Pt<%i)_vs_NVertex'%(min,bosonmax[i]))
-	    plt.clf()
 	    plt.figure(0)
 	    
 
@@ -1412,8 +1315,8 @@ def plot_results(config, plotData, dictPlot, meanTarget, stdTarget, dictTarget):
     resultData, dictResult = make_ControlPlots(config, plotData, dictPlot, 'recoilslimmedMETsPuppi', 'Boson_Pt',resultData, dictResult, 10,200,10,0,0)
 
     if plotconfig['plotNNPerformance']:
-	if 'NN_LongZ' in dictPlot:
-	    resultData, dictResult = make_ControlPlots(config, plotData, dictPlot, 'NN', 'Boson_Pt',resultData, dictResult, 10,200,10,0,0)
+	if 'NNLong' in dictPlot:
+	    resultData, dictResult = make_ControlPlots(config, plotData, dictPlot, 'NNLong', 'Boson_Pt',resultData, dictResult, 10,200,10,0,0)
 	    
 	if 'NNOutput_targetX' in dictPlot:
 	    DPhiFromKart = PhiFromKart - plotData[:, dictPlot['Boson_Phi']]
@@ -1450,20 +1353,6 @@ def plot_results(config, plotData, dictPlot, meanTarget, stdTarget, dictTarget):
     legend = plt.legend(loc='lower right', shadow=True)
     legend.get_frame().set_alpha(0.5)
     plt.savefig(config['outputDir'] + 'ResponseCorrected_vs_BosonPt')
-    plt.clf()
-    plt.figure(7)
-    legend = plt.legend(loc='lower right', shadow=True)
-    legend.get_frame().set_alpha(0.5)
-    plt.xlabel('Boson Pt')
-    plt.ylabel('MET Boson PT_Perp')
-    plt.savefig(config['outputDir'] + 'ResponsePerp_vs_BosonPt')
-    plt.clf()
-    plt.figure(8)
-    plt.xlabel('Boson Pt')
-    plt.ylabel('MET Boson PT_Perp')
-    legend = plt.legend(loc='lower right', shadow=True)
-    legend.get_frame().set_alpha(0.5)
-    plt.savefig(config['outputDir'] + 'ResolutionPerp_vs_BosonPt')
     plt.clf()
     plt.figure(0)
 	    
